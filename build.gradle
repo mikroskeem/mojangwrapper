@@ -1,0 +1,82 @@
+buildscript {
+    dependencies {
+        classpath group: 'org.junit.platform', name: 'junit-platform-gradle-plugin', version: junit_plugin_version
+    }
+}
+
+plugins {
+    id 'java'
+    id 'idea'
+    id 'org.jetbrains.kotlin.jvm' version '1.1.4'
+    id 'org.zeroturnaround.gradle.jrebel' version '1.1.5'
+    id 'net.minecrell.licenser' version '0.3'
+}
+
+group = properties.group
+version = properties.version
+
+// Kotlin compiler configuration
+compileKotlin {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+
+    kotlinOptions {
+        jvmTarget = '1.8'
+        apiVersion = '1.1'
+        languageVersion = '1.1'
+    }
+}
+
+// Project repositories
+repositories {
+    mavenLocal()
+    mavenCentral()
+    jcenter()
+}
+
+// Project dependencies
+dependencies {
+    compile group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib-jre8', version: kotlin_version
+    compile group: 'org.jetbrains.kotlinx', name: 'kotlinx-coroutines-core', version: kotlin_coroutines_version
+    compile group: 'com.github.ben-manes.caffeine', name: 'caffeine', version: caffeine_version
+    compile group: 'com.squareup.okhttp3', name: 'okhttp', version: okhttp_version
+    compile group: 'org.slf4j', name: 'slf4j-api', version: slf4j_version
+    compile group: 'redis.clients', name: 'jedis', version: jedis_version
+    compile group: 'org.msgpack', name: 'msgpack-core', version: msgpack_version
+    compile group: 'com.google.code.gson', name: 'gson', version: gson_version
+
+    testRuntime group: 'org.slf4j', name: 'slf4j-simple', version: slf4j_version
+    testCompile group: 'org.junit.platform', name: 'junit-platform-runner', version: junit_plugin_version
+    testCompile group: 'org.jetbrains.kotlin', name: 'kotlin-reflect', version: kotlin_version
+    testCompile group: 'org.jetbrains.kotlin', name: 'kotlin-test', version: kotlin_test_version
+    testCompile(group: 'org.jetbrains.spek', name: 'spek-api', version: spek_version) {
+        exclude group: 'org.jetbrains.kotlin'
+    }
+    testRuntime(group: 'org.jetbrains.spek', name: 'spek-junit-platform-engine', version: spek_version) {
+        exclude group: 'org.junit.platform'
+        exclude group: 'org.jetbrains.kotlin'
+    }
+}
+
+// Kotlin
+kotlin {
+    experimental {
+        coroutines "enable"
+    }
+}
+
+// JUnit
+apply plugin: 'org.junit.platform.gradle.plugin'
+junitPlatform {
+    filters {
+        engines {
+            include 'spek'
+        }
+    }
+}
+
+// Wrapper task
+task wrapper(type: Wrapper) {
+    gradleVersion = gradle_version
+    distributionUrl = "https://services.gradle.org/distributions/gradle-$gradle_version-all.zip"
+}
