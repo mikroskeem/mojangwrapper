@@ -69,13 +69,9 @@ class MojangWrapper(
         usernames.size > 100 -> {
             val uuidList = mutableListOf<UUID?>()
             var count = 0
-            // 0 < 100
-            // 99 < 100
             while(count < (usernames.size - 1)) {
                 val take = count.coerceAtMost(100)
                 launch(CommonPool) {
-                    // 0 .. 99
-                    // 99 .. 100
                     resolveUUIDs(*usernames.sliceArray(count..count+(take - 1)))
                             .run(uuidList::addAll)
                 }
