@@ -122,17 +122,16 @@ class CallSpec: Spek({
                     "ImportPython",
                     "Is200PingGood",
                     "EladYat",
-                    "Ferocious_Ben",
                     "Axle39",
                     "uioz",
                     "trainrider",
                     "BurningFurnace",
                     "Redstone",
                     "3i5g00d",
-                    "zEL3M3nTz",
+                    "zEl3M3nTz",
                     "Olaf_C",
                     "Vectrix",
-                    "johnsquawk",
+                    "Johnsquawk",
                     "gocodygo",
                     "Hannah4848",
                     "CruXXx",
@@ -149,7 +148,24 @@ class CallSpec: Spek({
                     "Seska_Rotan",
                     "Sting",
                     "AzBandit2000",
-                    "Richard1230"
+                    "Richard1230",
+                    "EnzoGoober",
+                    // Some names I remember from head
+                    "md_5",
+                    "prplz",
+                    "EvilSeph",
+                    "sk89q",
+                    // Numbers are used fairly commonly
+                    "001",
+                    "002",
+                    "003",
+                    "004",
+                    "006",
+                    "007",
+                    "008",
+                    "009",
+                    "128",
+                    "256"
             )
 
             val resultingUUIDs = mojangWrapper.resolveUUIDs(*namesArray)

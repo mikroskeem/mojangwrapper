@@ -63,26 +63,23 @@ class MojangWrapper(
     fun resolveUUID(username: String): UUID? = resolveUUIDs(username)[0]
 
     /**
-     * Tries to do bulk Username -> UUID lookup
+     * Tries to do Usernames -> UUIDs lookup
      */
-    fun resolveUUIDs(vararg usernames: String): Array<out UUID?> = when {
+    fun resolveUUIDs(usernames: List<String>): List<UUID?> = when {
         usernames.size > 100 -> {
+            if(log.isTraceEnabled) log.trace("Trying to resolve {} UUIDs from usernames", usernames.size)
             val uuidList = mutableListOf<UUID?>()
-            var count = 0
-            while(count < (usernames.size - 1)) {
-                val take = count.coerceAtMost(100)
+            usernames.toList().batch(100).forEach {
                 launch(CommonPool) {
-                    resolveUUIDs(*usernames.sliceArray(count..count+(take - 1)))
-                            .run(uuidList::addAll)
+                    if(log.isTraceEnabled) log.trace("Launching up new coroutine with username array of size {}", it.size)
+                    resolveUUIDs(*it.toTypedArray()).run(uuidList::addAll)
                 }
-                count += (take - 1)
-
             }
-            uuidList.toTypedArray()
+            uuidList
         }
         //<editor-fold desc="2-100">
         usernames.size > 1 -> {
-            if(log.isTraceEnabled) log.trace("Trying to resolve {} UUIDs from usernames", usernames[0])
+            if(log.isTraceEnabled) log.trace("Trying to resolve {} UUIDs from usernames", usernames.size)
             val url = HttpUrl.Builder()
                     .scheme("https")
                     .host("api.mojang.com")
@@ -113,7 +110,7 @@ class MojangWrapper(
                                 userMap.put(userName, uuidString.asString.convertUUID())
                         }
                     }
-                    userMap.values.toTypedArray()
+                    listOf(*userMap.values.toTypedArray())
                 } else {
                     if(log.isDebugEnabled) {
                         if(it.code() == RATE_LIMIT_CODE) {
@@ -122,7 +119,7 @@ class MojangWrapper(
                             log.debug("'{}' endpoint returned code '{}' and body: {}", url, it.code(), it.body())
                         }
                     }
-                    arrayOfNulls(usernames.size)
+                    listOf(*arrayOfNulls(usernames.size))
                 }
             }
         }
@@ -149,7 +146,7 @@ class MojangWrapper(
                     if(it.code() == 204) {
                         if(log.isTraceEnabled)
                             log.trace("UUID not found for username '{}'", usernames[0])
-                        return arrayOfNulls(1)
+                        return listOf(*arrayOfNulls(1))
                     }
 
                     // Do JSON parsing
@@ -159,7 +156,7 @@ class MojangWrapper(
                             if(this != usernames[0]) throw IllegalStateException("$this != ${usernames[0]}")
                         }
                         // Get UUID string and convert it to UUID object
-                        return arrayOf(root.get("id").asString.convertUUID())
+                        return listOf(root.get("id").asString.convertUUID())
                     }
                 } else {
                     if(log.isDebugEnabled) {
@@ -169,11 +166,30 @@ class MojangWrapper(
                             log.debug("'{}' endpoint returned code '{}' and body: {}", url, it.code(), it.body())
                         }
                     }
-                    return arrayOfNulls(1)
+                    return listOf(*arrayOfNulls(1))
                 }
             }
         }
         //</editor-fold>
-        else -> emptyArray()
+        usernames.isEmpty() -> emptyList()
+        else -> throw IllegalStateException("Should not reach here!")
     }
+
+    /**
+     * Redirects to [resolveUUIDs], just uses varargs and returns array
+     */
+    fun resolveUUIDs(vararg usernames: String): Array<out UUID?> = resolveUUIDs(listOf(*usernames)).toTypedArray()
+}
+
+// https://stackoverflow.com/a/42305023
+fun <T> List<T>.batch(chunkSize: Int): List<List<T>> {
+    if (chunkSize <= 0) throw IllegalArgumentException("chunkSize must be greater than 0")
+    val capacity = (size + chunkSize - 1) / chunkSize
+    val list = ArrayList<ArrayList<T>>(capacity)
+    for(i in 0 until size) {
+        if (i % chunkSize == 0)
+            list.add(ArrayList(chunkSize))
+        list.last().add(this[i])
+    }
+    return list
 }
