@@ -50,19 +50,116 @@ class CallSpec: Spek({
         }
     }
 
-    given("Player saYcrest and DirolGaming") {
+    given("Mojang block head skins") {
         on("Bulk UUID fetch") {
-            val resultingUUIDs = mojangWrapper.resolveUUIDs("saYcrest", "DirolGaming")
+            val resultingUUIDs = mojangWrapper.resolveUUIDs(
+                    // MHF heads from https://minecraft.gamepedia.com/Mob_head#Mojang_skins
+                    "MHF_Alex",
+                    "MHF_Blaze",
+                    "MHF_CaveSpider",
+                    "MHF_Chicken",
+                    "MHF_Cow",
+                    "MHF_Creeper",
+                    "MHF_Enderman",
+                    "MHF_Ghast",
+                    "MHF_Golem",
+                    "MHF_Herobrine",
+                    "MHF_LavaSlime",
+                    "MHF_MushroomCow",
+                    "MHF_Ocelot",
+                    "MHF_Pig",
+                    "MHF_PigZombie",
+                    "MHF_Sheep",
+                    "MHF_Skeleton",
+                    "MHF_Slime",
+                    "MHF_Spider",
+                    "MHF_Squid",
+                    "MHF_Steve",
+                    "MHF_Villager",
+                    "MHF_WSkeleton",
+                    "MHF_Zombie",
+                    "MHF_Cactus",
+                    "MHF_Cake",
+                    "MHF_Chest",
+                    "MHF_CoconutB",
+                    "MHF_CoconutG",
+                    "MHF_Melon",
+                    "MHF_OakLog",
+                    "MHF_Present1",
+                    "MHF_Present2",
+                    "MHF_Pumpkin",
+                    "MHF_TNT",
+                    "MHF_TNT2",
+                    "MHF_ArrowUp",
+                    "MHF_ArrowDown",
+                    "MHF_ArrowLeft",
+                    "MHF_ArrowRight",
+                    "MHF_Exclamation",
+                    "MHF_Question",
+                    "aced",
+                    // https://www.planetminecraft.com/blog/minecraft-playerheads-2579899/
+                    "Ernie77",
+                    "popcorn_lvr",
+                    "ZachWarnerHD",
+                    "Chipsandip",
+                    "FlabbenBaggen",
+                    "QuadratCookie",
+                    "Chazwell777",
+                    "DutchGuard",
+                    "AmericanOreo",
+                    "KylexDavis",
+                    "PatrickAVG",
+                    "Pandasaurus_R",
+                    "Thanauser",
+                    "Spinken5840",
+                    "Metroidling",
+                    "Mrben130dev",
+                    "GameNilo",
+                    "Laserpanda",
+                    "nonesuchplace",
+                    "Addelburgh",
+                    "Alistor",
+                    "CoderPuppy",
+                    "Hack",
+                    "ImportPython",
+                    "Is200PingGood",
+                    "EladYat",
+                    "PhaseSaber",
+                    "Davethe",
+                    "Ferocious_Ben",
+                    "Axle39",
+                    "uioz",
+                    "trainrider",
+                    "BurningFurnace",
+                    "Redstone",
+                    "3i5g00d",
+                    "zEL3M3nTz",
+                    "Olaf_C",
+                    "Vectrix",
+                    "johnsquawk",
+                    "gocodygo",
+                    "Hannah4848",
+                    "CruXXx",
+                    "thresh3",
+                    "SeerPotion",
+                    "Erixia",
+                    "CS001",
+                    "raxo55",
+                    "Asiankid2004",
+                    "ThePearlyBum",
+                    "Pencil",
+                    "bman1661",
+                    "Freshmuffin",
+                    "Seska_Rotan",
+                    "Sting",
+                    "AzBandit2000",
+                    "Richard1230"
+            )
 
-            it("should both resolve") {
-                assertNotNull(resultingUUIDs[0])
-                assertNotNull(resultingUUIDs[1])
-            }
-        }
-
-        on("failing") {
-            it("shouldn't fail") {
-                assertNotNull(null)
+            it("should resolve") {
+                resultingUUIDs.forEach {
+                    assertNotNull(it)
+                }
             }
         }
     }
