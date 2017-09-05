@@ -52,7 +52,7 @@ class CallSpec: Spek({
 
     given("Mojang block head skins") {
         on("Bulk UUID fetch") {
-            val resultingUUIDs = mojangWrapper.resolveUUIDs(
+            val namesArray = arrayOf(
                     // MHF heads from https://minecraft.gamepedia.com/Mob_head#Mojang_skins
                     "MHF_Alex",
                     "MHF_Blaze",
@@ -96,7 +96,6 @@ class CallSpec: Spek({
                     "MHF_ArrowRight",
                     "MHF_Exclamation",
                     "MHF_Question",
-                    "aced",
                     // https://www.planetminecraft.com/blog/minecraft-playerheads-2579899/
                     "Ernie77",
                     "popcorn_lvr",
@@ -113,7 +112,6 @@ class CallSpec: Spek({
                     "Thanauser",
                     "Spinken5840",
                     "Metroidling",
-                    "Mrben130dev",
                     "GameNilo",
                     "Laserpanda",
                     "nonesuchplace",
@@ -124,8 +122,6 @@ class CallSpec: Spek({
                     "ImportPython",
                     "Is200PingGood",
                     "EladYat",
-                    "PhaseSaber",
-                    "Davethe",
                     "Ferocious_Ben",
                     "Axle39",
                     "uioz",
@@ -156,9 +152,11 @@ class CallSpec: Spek({
                     "Richard1230"
             )
 
+            val resultingUUIDs = mojangWrapper.resolveUUIDs(*namesArray)
+
             it("should resolve") {
-                resultingUUIDs.forEach {
-                    assertNotNull(it)
+                resultingUUIDs.forEachIndexed { index, it ->
+                    assertNotNull(it, "${namesArray[index]} --> $it == null!")
                 }
             }
         }
